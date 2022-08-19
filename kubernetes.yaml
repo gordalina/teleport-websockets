@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: teleport-websockets
+spec:
+  selector:
+    app: teleport-websockets
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4000
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teleport-websockets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teleport-websockets
+  template:
+    metadata:
+      labels:
+        app: teleport-websockets
+    spec:
+      containers:
+        - name: teleport-websockets
+          image: gordalina/teleport-websockets:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+          env:
+            - name: SECRET_KEY_BASE
+              value: "KzfwwW5CUvnp8B4OJOqOUOM0Hn0HbIu8eWkn++gAFOU09qHhWJ9rrMTOJiNqvbNd"
+            - name: PHX_SERVER
+              value: "true"
+            - name: PORT
+              value: "4000"
